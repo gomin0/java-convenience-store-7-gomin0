@@ -12,7 +12,7 @@ public class ProductService {
 
     public ProductService() {
         FileReader fileReader = new FileReader();
-        List<Product> productList = fileReader.readProducts(fileReader.readPromotions());
+        List<Product> productList = fileReader.readProducts();
         this.products = productList.stream()
                 .collect(Collectors.toMap(Product::getName, Function.identity()));
     }

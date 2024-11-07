@@ -2,28 +2,25 @@ package store.domain.promotion;
 
 import java.time.LocalDate;
 
+
 public class Promotion {
-    private final String name;
-    private final int buyQuantity;
-    private final int freeQuantity;
+    private final PromotionType type;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public Promotion(String name, int buyQuantity, int freeQuantity,
-                     LocalDate startDate, LocalDate endDate) {
-        validateQuantities(buyQuantity, freeQuantity);
+    public Promotion(String typeName, LocalDate startDate, LocalDate endDate) {
+        this.type = validateAndGetType(typeName);
         validateDates(startDate, endDate);
-        this.name = name;
-        this.buyQuantity = buyQuantity;
-        this.freeQuantity = freeQuantity;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    private void validateQuantities(int buyQuantity, int freeQuantity) {
-        if (buyQuantity <= 0 || freeQuantity <= 0) {
-            throw new IllegalArgumentException("[ERROR] 구매 수량과 증정 수량은 0보다 커야 합니다.");
+    private PromotionType validateAndGetType(String typeName) {
+        PromotionType type = PromotionType.fromName(typeName);
+        if (type == null) {
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 프로모션 타입입니다.");
         }
+        return type;
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {
@@ -37,14 +34,14 @@ public class Promotion {
     }
 
     public String getName() {
-        return name;
+        return type.getDisplayName();
     }
 
     public int getBuyQuantity() {
-        return buyQuantity;
+        return type.getBuyQuantity();
     }
 
     public int getFreeQuantity() {
-        return freeQuantity;
+        return type.getFreeQuantity();
     }
 }
