@@ -5,21 +5,10 @@ public class PromotionResult {
     private final int freeQuantity;
     private final int discountAmount;
 
-    private PromotionResult(int payQuantity, int freeQuantity, int price) {
+    public PromotionResult(int payQuantity, int freeQuantity, int discountAmount) {
         this.payQuantity = payQuantity;
         this.freeQuantity = freeQuantity;
-        this.discountAmount = calculateDiscountAmount(price);
-    }
-
-    private int calculateDiscountAmount(int price) {
-        return freeQuantity * price;
-    }
-
-    public static PromotionResult createWithPromotion(int quantity, int buyQuantity,
-                                                      int freeQuantity, int price) {
-        int sets = quantity / (buyQuantity + freeQuantity);
-        int payQuantity = quantity - (sets * freeQuantity);
-        return new PromotionResult(payQuantity, sets * freeQuantity, price);
+        this.discountAmount = discountAmount;
     }
 
     public static PromotionResult createWithoutPromotion(int quantity) {

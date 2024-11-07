@@ -28,15 +28,26 @@ public class PromotionPolicy {
         if (!hasPromotion()) {
             return 0;
         }
-        return promotion.getBuyQuantity() - purchaseQuantity;
+        return Math.max(0, promotion.getBuyQuantity() - purchaseQuantity);
+    }
+
+    public PromotionResult calculatePromotionResult(int price) {
+        if (!isApplicable()) {
+            return PromotionResult.createWithoutPromotion(purchaseQuantity);
+        }
+        return calculatePromotionDiscount(price);
+    }
+
+    private PromotionResult calculatePromotionDiscount(int price) {
+        int sets = purchaseQuantity / (promotion.getBuyQuantity() + promotion.getFreeQuantity());
+        int freeItems = sets * promotion.getFreeQuantity();
+        int payingItems = purchaseQuantity - freeItems;
+
+        return new PromotionResult(payingItems, freeItems, price * freeItems);
     }
 
     public boolean hasPromotion() {
         return promotion != null;
-    }
-
-    public boolean needsAdditionalItems() {
-        return hasPromotion() && getAdditionalQuantityNeeded() > 0;
     }
 
     public Promotion getPromotion() {

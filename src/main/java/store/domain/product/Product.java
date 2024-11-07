@@ -1,6 +1,9 @@
 package store.domain.product;
 
 import store.domain.promotion.Promotion;
+import store.domain.promotion.PromotionPolicy;
+
+import java.time.LocalDate;
 
 public class Product {
     private final String name;
@@ -35,9 +38,9 @@ public class Product {
         }
     }
 
-    public boolean canApplyPromotion(int quantity) {
+    public boolean canApplyPromotion(int quantity, LocalDate currentDate) {
         return hasPromotion() &&
-                promotion.isApplicable(quantity) &&
+                new PromotionPolicy(promotion, quantity, currentDate).isApplicable() &&
                 stock.hasPromotionStock();
     }
 
