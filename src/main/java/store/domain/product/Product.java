@@ -1,5 +1,6 @@
 package store.domain.product;
 
+import store.domain.exception.StockException;
 import store.domain.promotion.Promotion;
 import store.domain.promotion.PromotionPolicy;
 
@@ -34,7 +35,7 @@ public class Product {
 
     public void validatePurchase(int quantity) {
         if (!stock.hasEnoughStock(quantity)) {
-            throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다.");
+            throw new StockException("재고 수량을 초과하여 구매할 수 없습니다.");
         }
     }
 
