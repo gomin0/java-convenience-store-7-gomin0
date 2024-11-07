@@ -1,4 +1,7 @@
-package store;
+package store.service;
+
+import store.domain.Product;
+import store.domain.Promotion;
 
 import java.io.IOException;
 import java.nio.file.Files;

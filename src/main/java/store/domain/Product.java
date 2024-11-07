@@ -1,26 +1,18 @@
-package store;
+package store.domain;
 
 public class Product {
     private final String name;
     private final int price;
-    private int normalStock;
-    private int promotionStock;
+    private final Stock stock;
     private final Promotion promotion;
 
     public Product(String name, int price, int normalStock, int promotionStock, Promotion promotion) {
-        validate(name, price, normalStock, promotionStock);
-        this.name = name;
-        this.price = price;
-        this.normalStock = normalStock;
-        this.promotionStock = promotionStock;
-        this.promotion = promotion;
-    }
-
-    private void validate(String name, int price, int normalStock, int promotionStock) {
         validateName(name);
         validatePrice(price);
-        validateStock(normalStock);
-        validateStock(promotionStock);
+        this.name = name;
+        this.price = price;
+        this.stock = new Stock(normalStock, promotionStock);
+        this.promotion = promotion;
     }
 
     private void validateName(String name) {
@@ -35,14 +27,40 @@ public class Product {
         }
     }
 
-    private void validateStock(int stock) {
-        if (stock < 0) {
-            throw new IllegalArgumentException("[ERROR] 재고는 0 이상이어야 합니다.");
+    public void validatePurchase(int quantity) {
+        if (!stock.hasEnoughStock(quantity)) {
+            throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다.");
         }
     }
 
+    public boolean canApplyPromotion(int quantity) {
+        return hasPromotion() &&
+                promotion.isApplicable(quantity) &&
+                stock.hasPromotionStock();
+    }
+
+    public void reducePurchaseStock(int quantity) {
+        if (stock.hasPromotionStock()) {
+            stock.reducePromotionStock(quantity);
+            return;
+        }
+        stock.reduceNormalStock(quantity);
+    }
+
+    public boolean hasPromotion() {
+        return promotion != null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
     public String formatProductInfo() {
-        if (getTotalStock() == 0) {
+        if (stock.getTotalStock() == 0) {
             return formatOutOfStock();
         }
         return formatInStock();
@@ -55,17 +73,13 @@ public class Product {
 
     private String formatInStock() {
         return String.format("- %s %,d원 %d개%s",
-                name, price, getTotalStock(), getPromotionName());
+                name, price, stock.getTotalStock(), getPromotionName());
     }
 
     private String getPromotionName() {
-        if (promotion == null) {
+        if (!hasPromotion()) {
             return "";
         }
         return " " + promotion.getName();
-    }
-
-    private int getTotalStock() {
-        return normalStock + promotionStock;
     }
 }
