@@ -20,8 +20,4 @@ public class Membership {
         }
         return Math.min((int)(amount * DISCOUNT_RATE), MAX_DISCOUNT);
     }
-
-    public boolean isActivated() {
-        return isActivated;
-    }
 }

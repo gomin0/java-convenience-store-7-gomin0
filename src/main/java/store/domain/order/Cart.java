@@ -34,8 +34,4 @@ public class Cart {
     public OrderCalculator createCalculator() {
         return new OrderCalculator(orders, orderDate, membershipApplied);
     }
-
-    public List<Order> getOrders() {
-        return new ArrayList<>(orders);
-    }
 }

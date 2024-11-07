@@ -32,6 +32,7 @@ public class OrderCalculator {
 
     private void processOrder(Order order) {
         PromotionResult promotionResult = calculatePromotion(order);
+        order.getProduct().reducePurchaseStock(order.getQuantity());
         OrderResult result = createOrderResult(order, promotionResult);
         results.add(result);
     }

@@ -36,10 +36,6 @@ public class Promotion {
         return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
 
-    public int calculatePromotion(int quantity) {
-        return (quantity / buyQuantity) * freeQuantity;
-    }
-
     public String getName() {
         return name;
     }
