@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.promotion;
 
 import java.time.LocalDate;
 
@@ -12,6 +12,7 @@ public class Promotion {
     public Promotion(String name, int buyQuantity, int freeQuantity,
                      LocalDate startDate, LocalDate endDate) {
         validateQuantities(buyQuantity, freeQuantity);
+        validateDates(startDate, endDate);
         this.name = name;
         this.buyQuantity = buyQuantity;
         this.freeQuantity = freeQuantity;
@@ -25,15 +26,17 @@ public class Promotion {
         }
     }
 
+    private void validateDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("[ERROR] 프로모션 기간이 올바르지 않습니다.");
+        }
+    }
+
     public boolean isValidPeriod(LocalDate date) {
         return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
 
-    public boolean isApplicable(int quantity) {
-        return quantity >= buyQuantity;
-    }
-
-    public int calculateFreeItems(int quantity) {
+    public int calculatePromotion(int quantity) {
         return (quantity / buyQuantity) * freeQuantity;
     }
 
@@ -43,5 +46,9 @@ public class Promotion {
 
     public int getBuyQuantity() {
         return buyQuantity;
+    }
+
+    public int getFreeQuantity() {
+        return freeQuantity;
     }
 }
