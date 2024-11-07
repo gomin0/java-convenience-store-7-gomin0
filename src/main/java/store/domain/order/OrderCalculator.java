@@ -1,5 +1,6 @@
 package store.domain.order;
 
+import store.domain.membership.Membership;
 import store.domain.promotion.PromotionPolicy;
 import store.domain.promotion.PromotionResult;
 
@@ -8,18 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderCalculator {
-    private static final double MEMBERSHIP_DISCOUNT_RATE = 0.3;
-    private static final int MAX_MEMBERSHIP_DISCOUNT = 8000;
-
     private final List<Order> orders;
     private final LocalDate orderDate;
-    private final boolean hasMembership;
+    private final Membership membership;
     private final List<OrderResult> results;
 
     public OrderCalculator(List<Order> orders, LocalDate orderDate, boolean hasMembership) {
         this.orders = new ArrayList<>(orders);
         this.orderDate = orderDate;
-        this.hasMembership = hasMembership;
+        this.membership = Membership.from(hasMembership);
         this.results = new ArrayList<>();
     }
 
@@ -48,9 +46,8 @@ public class OrderCalculator {
     }
 
     private OrderResult createOrderResult(Order order, PromotionResult promotionResult) {
-        int membershipDiscount = calculateMembershipDiscount(
-                order.getProduct().getPrice() * promotionResult.getPayQuantity()
-        );
+        int originalPrice = order.getProduct().getPrice() * promotionResult.getPayQuantity();
+        int membershipDiscount = membership.calculateDiscount(originalPrice);
 
         return new OrderResult(
                 order.getProduct(),
@@ -58,16 +55,6 @@ public class OrderCalculator {
                 promotionResult.getFreeQuantity(),
                 promotionResult.getDiscountAmount(),
                 membershipDiscount
-        );
-    }
-
-    private int calculateMembershipDiscount(int amount) {
-        if (!hasMembership) {
-            return 0;
-        }
-        return Math.min(
-                (int)(amount * MEMBERSHIP_DISCOUNT_RATE),
-                MAX_MEMBERSHIP_DISCOUNT
         );
     }
 }

@@ -4,13 +4,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Cart {
     private final List<Order> orders;
     private final LocalDate orderDate;
+    private boolean membershipApplied;
 
     public Cart(LocalDate orderDate) {
         this.orders = new ArrayList<>();
         this.orderDate = orderDate;
+        this.membershipApplied = false;
     }
 
     public void addOrder(Order order) {
@@ -24,8 +27,12 @@ public class Cart {
         }
     }
 
-    public OrderCalculator createCalculator(boolean hasMembership) {
-        return new OrderCalculator(orders, orderDate, hasMembership);
+    public void applyMembership() {
+        this.membershipApplied = true;
+    }
+
+    public OrderCalculator createCalculator() {
+        return new OrderCalculator(orders, orderDate, membershipApplied);
     }
 
     public List<Order> getOrders() {
