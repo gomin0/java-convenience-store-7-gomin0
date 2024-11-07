@@ -64,6 +64,10 @@ public class Product {
         return price;
     }
 
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
     public String formatProductInfo() {
         if (stock.getTotalStock() == 0) {
             return formatOutOfStock();
