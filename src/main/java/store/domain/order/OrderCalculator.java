@@ -58,4 +58,16 @@ public class OrderCalculator {
                 membershipDiscount
         );
     }
+
+    public List<Order> getOrders() {
+        return new ArrayList<>(orders);
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public boolean isMembershipApplied() {
+        return membership.isActive();
+    }
 }
