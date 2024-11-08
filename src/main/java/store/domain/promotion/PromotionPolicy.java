@@ -39,9 +39,9 @@ public class PromotionPolicy {
     }
 
     private PromotionResult calculatePromotionDiscount(int price) {
-        int sets = purchaseQuantity / (promotion.getBuyQuantity() + promotion.getFreeQuantity());
+        int sets = purchaseQuantity / promotion.getBuyQuantity();
         int freeItems = sets * promotion.getFreeQuantity();
-        int payingItems = purchaseQuantity - freeItems;
+        int payingItems = purchaseQuantity;
 
         return new PromotionResult(payingItems, freeItems, price * freeItems);
     }
