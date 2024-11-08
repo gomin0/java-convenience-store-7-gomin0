@@ -3,28 +3,23 @@ package store.service;
 import store.domain.product.Product;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ProductService {
-    private final Map<String, Product> products;
+    private final List<Product> products;
 
     public ProductService() {
         FileReader fileReader = new FileReader();
-        List<Product> productList = fileReader.readProducts();
-        this.products = productList.stream()
-                .collect(Collectors.toMap(Product::getName, Function.identity()));
+        this.products = fileReader.readProducts();
     }
 
     public List<Product> getAvailableProducts() {
-        return List.copyOf(products.values());
+        return products;
     }
 
     public Product findProduct(String name) {
-        if (!products.containsKey(name)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다.");
-        }
-        return products.get(name);
+        return products.stream()
+                .filter(product -> product.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다."));
     }
 }
