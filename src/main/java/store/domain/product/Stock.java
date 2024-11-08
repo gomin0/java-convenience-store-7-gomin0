@@ -1,5 +1,6 @@
 package store.domain.product;
 
+import store.domain.exception.StockException;
 
 public class Stock {
     private int normalStock;
@@ -30,18 +31,21 @@ public class Stock {
     }
 
     public void reducePromotionStock(int quantity) {
-        validateReduceQuantity(quantity);
+        validateReduceQuantity(quantity, promotionStock);
         promotionStock -= quantity;
     }
 
     public void reduceNormalStock(int quantity) {
-        validateReduceQuantity(quantity);
+        validateReduceQuantity(quantity, normalStock);
         normalStock -= quantity;
     }
 
-    private void validateReduceQuantity(int quantity) {
+    private void validateReduceQuantity(int quantity, int currentStock) {
         if (quantity < 0) {
             throw new IllegalArgumentException("[ERROR] 차감할 수량은 0보다 작을 수 없습니다.");
+        }
+        if (quantity > currentStock) {
+            throw new StockException("재고 수량을 초과하여 구매할 수 없습니다.");
         }
     }
 }
